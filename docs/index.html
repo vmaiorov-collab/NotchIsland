@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NotchIsland — Dynamic Island для вашего Mac</title>
+<meta name="description" content="Бесплатное приложение для macOS: превращает чёлку MacBook в Dynamic Island с музыкой, временем и зарядом батареи.">
+<style>
+  :root { --bg:#fff; --fg:#111; --muted:#6b6b76; --card:#f4f4f7; --accent:#7c5cff; --line:#e4e4ea; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#0b0b0e; --fg:#f2f2f5; --muted:#9a9aa6; --card:#16161b; --line:#26262e; } }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:17px/1.55 -apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif; }
+  main { max-width:960px; margin:0 auto; padding:0 20px; }
+  .hero { text-align:center; padding:56px 0 24px; }
+  h1 { font-size:clamp(38px,7vw,68px); line-height:1.05; margin:0 0 16px; letter-spacing:-.03em; }
+  h1 span { background:linear-gradient(90deg,#ff5fa2,var(--accent)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .lead { color:var(--muted); max-width:560px; margin:0 auto 28px; font-size:19px; }
+  .btn { display:inline-block; padding:12px 22px; border-radius:999px; background:var(--fg); color:var(--bg); text-decoration:none; font-weight:600; margin:4px; }
+  .btn.ghost { background:transparent; color:var(--fg); border:1px solid var(--line); }
+
+  /* demo screen */
+  .screen { position:relative; height:260px; max-width:720px; margin:36px auto 0; border-radius:18px 18px 0 0;
+    background:radial-gradient(120% 120% at 20% 0%,#5b3df5 0%,#c13584 45%,#fd8d3c 100%); overflow:hidden; border:1px solid var(--line); }
+  .bar { height:26px; background:rgba(0,0,0,.18); }
+  .island { position:absolute; top:0; left:50%; transform:translateX(-50%); width:170px; height:26px; background:#000; color:#fff;
+    border-radius:0 0 14px 14px; overflow:hidden; cursor:pointer;
+    transition:width .5s cubic-bezier(.3,1.4,.5,1), height .5s cubic-bezier(.3,1.4,.5,1), border-radius .5s; }
+  .screen:hover .island, .island:focus { width:400px; height:120px; border-radius:0 0 28px 28px; }
+  .wings { position:absolute; inset:0 14px; display:flex; justify-content:space-between; align-items:center; font-size:13px; transition:opacity .2s; }
+  .eq { display:flex; gap:2.5px; align-items:center; height:16px; }
+  .eq i { width:3px; background:#34d058; border-radius:2px; animation:eq 0.9s ease-in-out infinite; }
+  .eq i:nth-child(2){animation-delay:.15s} .eq i:nth-child(3){animation-delay:.3s} .eq i:nth-child(4){animation-delay:.45s}
+  @keyframes eq { 0%,100%{height:4px} 50%{height:15px} }
+  .full { position:absolute; inset:0; padding:0 22px; opacity:0; transition:opacity .2s; }
+  .row1 { height:26px; display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:600; }
+  .row2 { display:flex; align-items:center; gap:12px; margin-top:12px; }
+  .art { width:48px; height:48px; border-radius:10px; background:linear-gradient(135deg,#ff5fa2,#7c5cff); flex:none; }
+  .meta b { display:block; font-size:14px; } .meta small { color:#9a9aa6; font-size:12px; }
+  .ctl { margin-left:auto; letter-spacing:10px; font-size:16px; }
+  .screen:hover .wings, .island:focus .wings { opacity:0; transition-delay:0s; }
+  .screen:hover .full, .island:focus .full { opacity:1; transition-delay:.12s; }
+  .hint { text-align:center; color:var(--muted); font-size:14px; margin:10px 0 0; }
+
+  section { padding:64px 0 0; }
+  h2 { font-size:32px; letter-spacing:-.02em; margin:0 0 20px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; }
+  .card { background:var(--card); border-radius:18px; padding:20px; }
+  .card h3 { margin:0 0 6px; font-size:18px; } .card p { margin:0; color:var(--muted); font-size:15px; }
+  pre { background:var(--card); border-radius:14px; padding:16px 18px; overflow-x:auto; font-size:15px; }
+  code { font-family:ui-monospace,"SF Mono",Menlo,monospace; }
+  ol li { margin:6px 0; }
+  footer { margin:72px 0 40px; color:var(--muted); font-size:14px; text-align:center; }
+  a { color:var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <header class="hero">
+    <h1>Чёлка, которая <span>живёт</span></h1>
+    <p class="lead">NotchIsland превращает вырез MacBook в Dynamic Island: музыка, время и батарея — прямо в чёлке.</p>
+    <a class="btn" href="https://github.com/vmaiorov-collab/NotchIsland">Скачать на GitHub</a>
+    <a class="btn ghost" href="#install">Как установить</a>
+
+    <div class="screen" aria-label="Демо">
+      <div class="bar"></div>
+      <div class="island" tabindex="0">
+        <div class="wings"><span>♪</span><div class="eq"><i></i><i></i><i></i><i></i></div></div>
+        <div class="full">
+          <div class="row1"><span>9:41</span><span>82% ▮</span></div>
+          <div class="row2"><div class="art"></div><div class="meta"><b>Surface Pressure</b><small>No Resolve</small></div><div class="ctl">⏮⏯⏭</div></div>
+        </div>
+      </div>
+    </div>
+    <p class="hint">Наведите курсор на экран, чтобы увидеть, как это работает</p>
+  </header>
+
+  <section>
+    <h2>Что умеет</h2>
+    <div class="grid">
+      <div class="card"><h3>Любой плеер</h3><p>Yandex Music, Spotify, Music, браузер — берёт системный «Сейчас играет».</p></div>
+      <div class="card"><h3>Управление</h3><p>Кнопки ⏮ ⏯ ⏭ работают через системные медиаклавиши.</p></div>
+      <div class="card"><h3>Время и батарея</h3><p>Раскрытый остров показывает время и заряд с индикатором зарядки.</p></div>
+      <div class="card"><h3>Не мешает</h3><p>Поверх всех окон и столов, клики вокруг проходят насквозь. Живёт в строке меню.</p></div>
+    </div>
+  </section>
+
+  <section id="install">
+    <h2>Установка</h2>
+    <p>Нужны macOS 14+ и Xcode Command Line Tools (<code>xcode-select --install</code>).</p>
+    <pre><code>git clone https://github.com/vmaiorov-collab/NotchIsland.git
+cd NotchIsland
+./build.sh
+open NotchIsland.app</code></pre>
+    <ol>
+      <li>Если macOS не открывает приложение — правый клик → «Открыть».</li>
+      <li>Чтобы запускалось само, включите «Запускать при входе» в меню капсулы в строке меню.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Важно знать</h2>
+    <p style="color:var(--muted)">Чтение «Сейчас играет» и закрепление окна используют приватные API macOS (MediaRemote и SkyLight). Они могут перестать работать после обновления системы. На Mac без чёлки остров рисуется как плашка по центру сверху.</p>
+  </section>
+
+  <footer>NotchIsland · с открытым исходным кодом</footer>
+</main>
+</body>
+</html>
